@@ -2,6 +2,22 @@
 
 The repository implements Proximal policy optimization algorithm to optimize N-model control.
 
+## Setup
+
+Python 3.10 or newer is required (tensorflow 2.21 declares `Requires-Python >=3.10`; on Python 3.9
+the interpreter aborts at `import tensorflow`). Install the dependencies into a virtual environment:
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+`train.py` runs the policy optimization and `value_iteration_Nmodel.py` runs the value iteration.
+Both are run from the repository root, because `check_optimality` loads `action09.npy` relative to
+the working directory. `train.py` simulates the episodes on ray actors, so the ray cluster is
+started automatically.
+
 ## N-model
 The N-model processing network was first proposed in [1]. It is a processing network system with two independent Poisson input arrival flows, two servers, exponential service times, and
 linear holding costs. We use uniformization to convert the continuous-time control problem to a discrete-time control problem.\

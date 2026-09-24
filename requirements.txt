@@ -1,0 +1,6 @@
+# Python >= 3.10 is required (tensorflow 2.21 declares Requires-Python >=3.10).
+# Versions below are the ones this repository was verified to run with.
+tensorflow==2.21.0
+scikit-learn==1.9.1
+ray==2.58.0
+numpy==2.4.6

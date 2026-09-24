@@ -131,10 +131,11 @@ def add_value(trajectories, val_func, scaler, possible_states):
     time_policy = end_time - start_time
     print('add_value time:', int((time_policy.total_seconds() / 60) * 100) / 100., 'minutes')
 
-def build_train_set(trajectories, gamma, scaler):
+def build_train_set(trajectories, network, gamma, scaler):
     """
     # data pre-processing for training, computation of advantage function estimates
     :param trajectory_whole:  simulated data
+    :param network: queuing network
     :param scaler: normalization values
     :return: data for further Policy and Value neural networks training
     """
@@ -274,7 +275,7 @@ def main(network, num_policy_iterations, no_of_actors, episode_duration, no_arri
         # recompute value NN for each visited state
         add_value(trajectories, val_func, scaler, network.next_state_list())
         # compute advantage function estimates
-        observes, actions, advantages, disc_sum_rew = build_train_set(trajectories, gamma, scaler)
+        observes, actions, advantages, disc_sum_rew = build_train_set(trajectories, network, gamma, scaler)
         # add various stats
         log_batch_stats(observes, actions, advantages, disc_sum_rew, logger, iteration)
         # update policy
@@ -338,16 +339,16 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--clipping_parameter', type=float, help='Initial clipping parameter',
                         default=0.2)
 
-    parser.add_argument('-e', '--ep_v', type=float, help='number of epochs for value NN training',
+    parser.add_argument('-e', '--ep_v', type=int, help='number of epochs for value NN training',
                         default=10)
-    parser.add_argument('-s', '--bs_v', type=float, help='minibatch size for value NN training',
+    parser.add_argument('-s', '--bs_v', type=int, help='minibatch size for value NN training',
                         default=256)
     parser.add_argument('-r', '--lr_v', type=float, help='learning rate for value NN training',
                         default=2.5 * 10**(-4))
 
-    parser.add_argument('-p', '--ep_p', type=float, help='number of epochs for policy NN training',
+    parser.add_argument('-p', '--ep_p', type=int, help='number of epochs for policy NN training',
                         default=3)
-    parser.add_argument('-w', '--bs_p', type=float, help='minibatch size for policy NN training',
+    parser.add_argument('-w', '--bs_p', type=int, help='minibatch size for policy NN training',
                         default=2048)
     parser.add_argument('-q', '--lr_p', type=float, help='learning rate for policy NN training',
                         default=2.5 * 10 ** (-4))

@@ -10,7 +10,10 @@ class PolicyNN(tf.keras.Model):
         self.hid1_mult = hid1_mult
 
         self.obs_dim = obs_dim
-        self.act_dim = act_dim
+        # keep a plain tuple: tf.keras.Layer.__setattr__ wraps list attributes
+        # into an (unpicklable) keras TrackedList, which breaks sending the
+        # policy to ray actors in simulation.py
+        self.act_dim = tuple(act_dim)
 
         hid1_size = self.obs_dim * self.hid1_mult
         hid3_size = len(self.act_dim) * 10  # 10 empirically determined
@@ -158,7 +161,7 @@ class Policy(object):
         else:
             determ_prob = []
 
-            inx = np.argmax(pr.numpy())
+            inx = np.argmax(pr)
             ar = np.zeros(self.nn.act_dim)
             ar[inx] = 1
             determ_prob.extend([ar[np.newaxis]])
